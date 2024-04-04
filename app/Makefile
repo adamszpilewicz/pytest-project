@@ -47,3 +47,68 @@
 #	@echo "test_name_fixtures"
 #	@echo "pytest --test_name_fixtures"
 #	@pytest --fixtures
+
+
+pytest_help:
+	@echo "see help of pytest"
+	@pytest --help
+
+test_intro:
+	@echo "Running tests..."
+	@../venv_pytest/bin/python3.12 -m pytest ./tests/unit/utils/test_db_utils.py
+
+test_intro_verbose:
+	@echo "Running tests verbose..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/utils/test_db_utils.py
+
+test_intro_discover:
+	@echo "Running tests..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/utils
+
+test_collect_only:
+	@echo "Collecting tests without running them..."
+	@../venv_pytest/bin/python3.12 -m pytest --collect-only ./tests/unit/utils
+
+test_by_name:
+	@echo "Running tests that match the given expression..."
+	@../venv_pytest/bin/python3.12 -m pytest -v -k  "generate_insert_query or email" ./tests/unit/utils
+
+test_by_marker:
+	@echo "Running tests with a specific marker... (slow)"
+	@../venv_pytest/bin/python3.12 -m pytest -v -m "slow" ./tests/unit/utils
+
+test_exit_first:
+	@echo "Stopping at first failure..."
+	@../venv_pytest/bin/python3.12 -m pytest -v -x ./tests/unit/utils
+
+test_max_fail:
+	@echo "Stopping after N failures..."
+	@../venv_pytest/bin/python3.12 -m pytest -v --maxfail=2 ./tests/unit/utils
+
+test_no_capture:
+	@echo "Disabling output capturing..."
+	@../venv_pytest/bin/python3.12 -m pytest -v -s ./tests/unit/utils
+
+test_last_failed:
+	@echo "Running only the last failed tests..."
+	@../venv_pytest/bin/python3.12 -m pytest --lf ./tests/unit/utils
+
+test_failed_first:
+	@echo "Running failed tests first..."
+	@../venv_pytest/bin/python3.12 -m pytest --ff ./tests/unit/utils
+
+test_quiet:
+	@echo "Running tests in quiet mode..."
+	@../venv_pytest/bin/python3.12 -m pytest -q ./tests/unit/utils
+
+test_show_locals:
+	@echo "Showing local variables in tracebacks..."
+	@../venv_pytest/bin/python3.12 -m pytest -l ./tests/unit/utils
+
+test_traceback_style:
+	@echo "Setting traceback style..."
+	@../venv_pytest/bin/python3.12 -m pytest --tb=long ./tests/unit/utils
+
+test_durations:
+	@echo "Showing the durations of tests..."
+	@../venv_pytest/bin/python3.12 -m pytest --durations=5 ./tests/unit/utils
