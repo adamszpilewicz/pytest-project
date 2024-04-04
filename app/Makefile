@@ -99,7 +99,7 @@ test_failed_first:
 
 test_quiet:
 	@echo "Running tests in quiet mode..."
-	@../venv_pytest/bin/python3.12 -m pytest -q ./tests/unit/utils
+	@../venv_pytest/bin/python3.12 -m pytest -q ./app/tests/unit/utils
 
 test_show_locals:
 	@echo "Showing local variables in tracebacks..."
