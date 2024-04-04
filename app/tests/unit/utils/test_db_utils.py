@@ -2,7 +2,7 @@ import pytest
 
 from app.utils.db_utils import validate_email
 
-from utils.db_utils import generate_insert_query
+from utils.db_utils import generate_insert_query, operation_that_fails, time_consuming_operation
 
 
 # Test cases are separated into valid and invalid to handle the ValueError exception for invalid emails

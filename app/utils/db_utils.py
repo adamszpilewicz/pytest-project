@@ -1,4 +1,6 @@
 # utils.py
+import time
+
 
 def generate_insert_query(table, data):
     """
@@ -35,3 +37,19 @@ def validate_email(email: str) -> bool:
     if not proper:
         raise ValueError("Invalid email address")
     return proper
+
+
+def time_consuming_operation():
+    """
+    Simulates a time-consuming operation.
+    """
+    time.sleep(2)  # Simulate delay
+    return True
+
+
+def operation_that_fails():
+    """
+    A function that intentionally fails for demonstration purposes.
+    """
+    print("Performing an operation that fails...")
+    raise ValueError("This operation failed intentionally")
