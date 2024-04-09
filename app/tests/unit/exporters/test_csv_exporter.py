@@ -1,23 +1,23 @@
 import pytest
 import csv
 import os
-from app.exporters.csv_exporter import CSVExporter, NO_DATA_MESSAGE
+from exporters.csv_exporter import CSVExporter, NO_DATA_MESSAGE
 
 
-@pytest.fixture
-def sample_data():
-    return [
-        {"id": "1", "name": "Alice", "email": "alice@example.com"},
-        {"id": "2", "name": "Bob", "email": "bob@example.com"}
-    ]
+# @pytest.fixture
+# def sample_data():
+#     return [
+#         {"id": "1", "name": "Alice", "email": "alice@example.com"},
+#         {"id": "2", "name": "Bob", "email": "bob@example.com"}
+#     ]
 
 
-def test_save_to_csv_with_valid_data(tmpdir, sample_data):
+def test_save_to_csv_with_valid_data(tmpdir, sd):
     # Generate a file path in the temporary directory
     file_path = tmpdir.join("test_output.csv")
 
     # Call the static method to save data to CSV
-    CSVExporter.save_to_csv(sample_data, str(file_path))
+    CSVExporter.save_to_csv(sd, str(file_path))
 
     # Read back the CSV file to check its contents
     with open(file_path, newline='') as csvfile:
@@ -25,8 +25,8 @@ def test_save_to_csv_with_valid_data(tmpdir, sample_data):
         data_read = list(reader)
 
         # Assert that the data read from the CSV matches the original data
-        assert len(data_read) == len(sample_data)
-        for original, read_back in zip(sample_data, data_read):
+        assert len(data_read) == len(sd)
+        for original, read_back in zip(sd, data_read):
             assert original == dict(read_back)
 
 
@@ -43,56 +43,76 @@ def test_save_to_csv_with_empty_data(tmpdir, capsys):
     assert not os.path.exists(file_path)
 
 
+def test_save_to_csv_error_no_data(tmpdir):
+    file_path = tmpdir.join("empty_output.csv")
+
+    with pytest.raises(ValueError) as exc_info:
+        CSVExporter.save_to_csv_error_no_data([], str(file_path))
+
+    # Ensure the error message is as expected
+    assert NO_DATA_MESSAGE in str(exc_info.value)
+
+    # Ensure the file was not created
+    assert not os.path.exists(file_path)
+
+
 class MockDatabase:
-    def __init__(self):
-        self.data = [{"id": "1", "name": "Alice", "email": "alice@example.com"}]
+    def __init__(self, initial_data=None):
+        if initial_data is None:
+            initial_data = [
+                {"id": "1", "name": "Alice", "email": "alice@example.com"},
+                {"id": "2", "name": "Bob", "email": "bob@example.com"}
+            ]
+        self.data = initial_data
 
     def read(self, query):
-        # Simulate a 'SELECT *' query
+        # Symulacja zapytania 'SELECT *'
         if "SELECT *" in query:
             return self.data
         return []
 
 
-# Function-scope fixture for test data
+# Fixture z danymi testowymi o zasięgu funkcji
 @pytest.fixture(scope="function")
 def func_scope_data():
     return [{"id": "2", "name": "Bob", "email": "bob@example.com"}]
 
 
-# Module-scope fixture for database connection
-# Adjusting the mod_scope_db fixture to session scope
-@pytest.fixture(scope="session")
-def mod_scope_db():
-    db = MockDatabase()
-    return db
-
-
-# Session-scope fixture for CSVExporter
-# Adjusting the sess_scope_exporter fixture to module scope, for example
+# Fixture dla CSVExporter o zasięgu modułu
 @pytest.fixture(scope="module")
-def sess_scope_exporter(mod_scope_db):
-    exporter = CSVExporter(db=mod_scope_db)
+def module_scope_exporter(session_scope_db):
+    print("Inicjalizacja CSVExporter o zasięgu modułu")
+    exporter = CSVExporter(db=session_scope_db)
     return exporter
 
 
-def test_fetch_data_with_function_scope(func_scope_data, mod_scope_db):
-    mod_scope_db.data = func_scope_data  # Update DB data with function-scoped fixture
-    exporter = CSVExporter(db=mod_scope_db)
-    data = exporter.fetch_data("SELECT *")
-    assert data == func_scope_data
+# Fixture z danymi do bazy danych o zasięgu sesji
+@pytest.fixture(scope="session")
+def session_scope_db():
+    print("Inicjalizacja MockDatabase o zasięgu sesji")
+    return MockDatabase()
 
 
-def test_save_to_csv_with_module_scope(tmpdir, mod_scope_db, sess_scope_exporter):
-    # Use the module-scoped DB and session-scoped CSVExporter
+def test_save_to_csv_with_module_scope(tmpdir, session_scope_db, module_scope_exporter):
+    # Tutaj wykorzystujemy DB o zasięgu sesji i CSVExporter o zasięgu modułu
     file_path = tmpdir.join("module_scope.csv")
-    sess_scope_exporter.save_to_csv(mod_scope_db.data, str(file_path))
+    module_scope_exporter.save_to_csv(session_scope_db.data, str(file_path))
     with open(file_path, 'r') as f:
         content = f.read()
-    assert "Alice" in content
+    assert "Alice" in content and "Bob" in content
 
 
-def test_no_data_message_with_session_scope(capsys, sess_scope_exporter):
-    sess_scope_exporter.save_to_csv([], "unused_filename.csv")
+def test_fetch_data_with_function_scope(tmpdir, func_scope_data, session_scope_db):
+    session_scope_db.data = func_scope_data  # Aktualizacja danych w DB
+    file_path = tmpdir.join("func_scope_test.csv")
+    exporter = CSVExporter(db=session_scope_db)
+    exporter.save_to_csv(session_scope_db.data, str(file_path))
+    with open(file_path, 'r') as f:
+        content = f.read()
+    assert "Bob" in content  # Upewniamy się, że dane funkcji zostały użyte
+
+
+def test_no_data_message_with_session_scope(capsys, module_scope_exporter):
+    module_scope_exporter.save_to_csv([], "unused_filename.csv")
     captured = capsys.readouterr()
     assert NO_DATA_MESSAGE in captured.out

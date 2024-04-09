@@ -1,12 +1,12 @@
 import pytest
-from app.services.user_service import UserService
+from services.user_service import UserService
 
 
 class TestUserService:
-    # @pytest.fixture
-    # def mock_db(self, mocker):
-    #     # Use mocker.patch to return a MagicMock object for db operations
-    #     return mocker.patch('app.db.mysqldb.MySQLDatabase')
+    @pytest.fixture
+    def mock_db(self, mocker):
+        # Use mocker.patch to return a MagicMock object for db operations
+        return mocker.patch('db.mysqldb.MySQLDatabase')
 
     @pytest.fixture
     def user_service(self, mock_db):

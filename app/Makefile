@@ -53,6 +53,10 @@ pytest_help:
 	@echo "see help of pytest"
 	@pytest --help
 
+python_install_requirements:
+	@echo "Installing requirements..."
+	@../venv_pytest/bin/python3.12 -m pip install -r requirements.txt
+
 test_intro:
 	@echo "Running tests..."
 	@../venv_pytest/bin/python3.12 -m pytest ./tests/unit/utils/test_db_utils.py
@@ -112,3 +116,68 @@ test_traceback_style:
 test_durations:
 	@echo "Showing the durations of tests..."
 	@../venv_pytest/bin/python3.12 -m pytest --durations=5 ./tests/unit/utils
+
+test_run_marked:
+	@echo "Running tests with marker..."
+	@../venv_pytest/bin/python3.12 -m pytest -v -m "slow or error" ./tests/unit/utils
+
+test_built_in_markers:
+	@echo "Running tests with built-in markers..."
+	@../venv_pytest/bin/python3.12 -m pytest -v -m "not slow" ./tests/unit/utils
+
+test_validate_email_param:
+	@echo "Running tests with parameterized tests..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/utils/test_db_utils.py::test_validate_email
+
+# Different ways to run tests
+test_single_directory:
+	@echo "Running tests in a single directory..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/
+
+test_single_file:
+	@echo "Running tests in a single file..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/utils/test_db_utils.py
+
+test_single_test_function:
+	@echo "Running a single test..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/utils/test_db_utils.py::test_validate_email
+
+test_single_test_function_param:
+	@echo "Running a single test with parameter..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/utils/test_db_utils.py::test_validate_email["Missing @ symbol and domain"]
+
+test_single_class:
+	@echo "Running tests in a single class..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/services/test_user_service.py::TestUserService
+
+test_single_class_method:
+	@echo "Running a single test in a class..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/services/test_user_service.py::TestUserService::test_register_user_with_valid_email
+
+test_based_on_names:
+	@echo "Running tests based on names..."
+	@../venv_pytest/bin/python3.12 -m pytest -v -k "fails or invalid" ./tests/unit/utils/test_db_utils.py
+
+test_fixtures_setup:
+	@echo "Running tests with setup..."
+	@../venv_pytest/bin/python3.12 -m pytest --setup-show ./tests/unit/exporters/test_csv_exporter.py::test_save_to_csv_with_valid_data
+
+test_fixtures_scope:
+	@echo "Running tests with setup..."
+	@../venv_pytest/bin/python3.12 -m pytest -v --setup-show -k "test_save_to_csv_with_module_scope or test_fetch_data_with_function_scope or test_no_data_message_with_session_scope"  ./tests/unit/exporters/test_csv_exporter.py
+
+test_fixture_autouse:
+	@echo "Running tests with autouse..."
+	@../venv_pytest/bin/python3.12 -m pytest -v -s ./tests/unit/exporters/test_json_exporter.py
+
+test_fixture_parametrized:
+	@echo "Running tests with parameters..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/db/test_mysqldb.py
+
+test_tmpdir:
+	@echo "Running tests with tmpdir..."
+	@../venv_pytest/bin/python3.12 -m pytest -v --setup-show ./tests/unit/exporters/test_parquet_exporter.py
+
+test_capsys:
+	@echo "Running tests with capsys..."
+	@../venv_pytest/bin/python3.12 -m pytest -v  ./tests/unit/exporters/test_parquet_exporter.py::test_save_to_parquet_with_empty_data

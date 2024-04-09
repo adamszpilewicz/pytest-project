@@ -3,6 +3,9 @@
 import pytest
 
 
-def mock_db(mocker):
-    # Use mocker.patch to return a MagicMock object for db operations
-    return mocker.patch('app.db.postgresdb.PostgreSQL')
+@pytest.fixture
+def sd():
+    return [
+        {"id": "1", "name": "Alice", "email": "alice@example.com"},
+        {"id": "2", "name": "Bob", "email": "bob@example.com"}
+    ]

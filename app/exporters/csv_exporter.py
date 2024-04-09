@@ -25,3 +25,19 @@ class CSVExporter:
             writer.writeheader()
             writer.writerows(data)
         print(f"Data successfully saved to {filename}.")
+
+    @staticmethod
+    def save_to_csv_error_no_data(data: List[Dict], filename: str):
+        """
+        Save fetched data to a CSV file.
+        Raise a ValueError if no data is provided.
+        """
+        if not data:
+            raise ValueError(NO_DATA_MESSAGE)
+
+        keys = data[0].keys()
+        with open(filename, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=keys)
+            writer.writeheader()
+            writer.writerows(data)
+        print(f"Data successfully saved to {filename}.")
