@@ -1,8 +1,8 @@
 # app.py
-from app.db.postgresdb import PostgreSQL
-from app.db.mysqldb import MySQLDatabase
-from app.services.post_service import PostService
-from app.services.user_service import UserService
+from db.postgresdb import PostgreSQL
+from db.mysqldb import MySQLDatabase
+from services.post_service import PostService
+from services.user_service import UserService
 
 # ---- POSTGRES DATABASE CONNECTION ----
 dsn = "dbname=postgres user=postgres password=postgres host=localhost"
