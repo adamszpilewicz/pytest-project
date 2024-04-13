@@ -39,7 +39,7 @@ def test_create_with_parametrized_data(mocker, sd):
     db.create(table, data)
 
     # Assert that cursor.execute() was called once with the expected query and arguments
-    mocked_cursor.excute.assert_called_once_with(expected_query, expected_args)
+    mocked_cursor.execute.assert_called_once_with(expected_query, expected_args)
 
     # Assert that connection.commit() was called
     db.connection.commit.assert_called_once()
