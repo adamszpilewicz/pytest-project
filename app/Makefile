@@ -181,3 +181,27 @@ test_tmpdir:
 test_capsys:
 	@echo "Running tests with capsys..."
 	@../venv_pytest/bin/python3.12 -m pytest -v  ./tests/unit/exporters/test_parquet_exporter.py::test_save_to_parquet_with_empty_data
+
+test_mock_mysql:
+	@echo "Running tests with mock..."
+	@../venv_pytest/bin/python3.12 -m pytest -v ./tests/unit/db/test_mysqldb.py
+
+test_warn:
+	@echo "Running tests with warnings..."
+	@../venv_pytest/bin/python3.12 -m pytest -v  ./tests/unit/utils/test_db_utils.py::test_validate_email_with_warning
+
+test_doctest:
+	@echo "Running tests with doctest..."
+	@../venv_pytest/bin/python3.12  -m doctest -v ./utils/db_utils.py
+
+test_coverage_utils:
+	@echo "Running tests with coverage..."
+	@../venv_pytest/bin/python3.12 -m pytest -v --cov=utils --cov-report html ./tests/unit/utils
+
+test_coverage_services:
+	@echo "Running tests with coverage..."
+	@../venv_pytest/bin/python3.12 -m pytest -v --cov=services --cov-report html ./tests/unit/services
+
+test_coverage_exporters:
+	@echo "Running tests with coverage..."
+	@../venv_pytest/bin/python3.12 -m pytest -v --cov=exporters --cov-report html ./tests/unit/exporters

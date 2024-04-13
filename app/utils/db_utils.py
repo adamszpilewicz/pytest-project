@@ -1,5 +1,6 @@
 # utils.py
 import time
+import warnings
 
 
 def generate_insert_query(table, data):
@@ -53,3 +54,26 @@ def operation_that_fails():
     """
     print("Performing an operation that fails...")
     raise ValueError("This operation failed intentionally")
+
+
+def validate_email_with_warning(email: str) -> bool:
+    """
+    Validates an email address but warns if the domain is deprecated.
+    """
+    if email.endswith("@example.com"):
+        warnings.warn("Domain example.com is deprecated", DeprecationWarning)
+    return validate_email(email)
+
+
+def add(a, b):
+    """
+    Returns the sum of a and b.
+
+    >>> add(2, 3)
+    5
+    >>> add(-1, 1)
+    0
+    >>> add(-1, -1)
+    -2
+    """
+    return a + b

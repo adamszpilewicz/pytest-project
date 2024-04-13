@@ -1,6 +1,6 @@
 import pytest
 
-from utils.db_utils import validate_email
+from utils.db_utils import validate_email, validate_email_with_warning
 
 from utils.db_utils import generate_insert_query, operation_that_fails, time_consuming_operation
 
@@ -70,3 +70,16 @@ def test_operation_that_fails():
 def test_time_consuming_operation():
     print("Running a slow test...")
     assert time_consuming_operation() is True
+
+@pytest.mark.parametrize("email", [
+    "user@deprecateddomain.com",
+    "valid@example.com"
+])
+def test_validate_email_with_warning(email, recwarn):
+    validate_email_with_warning(email)
+    if email.endswith("@example.com"):
+        assert len(recwarn) == 1
+        assert recwarn[0].category == DeprecationWarning
+        assert "Domain example.com is deprecated" in str(recwarn[0].message)
+    else:
+        assert len(recwarn) == 0
