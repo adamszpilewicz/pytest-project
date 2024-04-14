@@ -1,8 +1,9 @@
-mysql
-psycopg2
-pyarrow
-pandas
+mysql==0.0.3
+psycopg2==2.9.9
+pyarrow==15.0.2
+pandas==2.2.1
 pytest==8.1.1
 pytest-mock==3.14.0
 pytest-cov==5.0.0
-mysql-connector-python
+mysql-connector-python==8.3.0
+
