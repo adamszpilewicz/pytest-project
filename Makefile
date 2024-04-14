@@ -205,3 +205,7 @@ test_coverage_services:
 test_coverage_exporters:
 	@echo "Running tests with coverage..."
 	@./venv_pytest/bin/python3.12 -m pytest -v --cov=exporters --cov-report html ./tests/unit/exporters
+
+test_all:
+	@echo "Running all tests..."
+	@./venv_pytest/bin/python3.12 -m pytest -s -v ./tests/unit
